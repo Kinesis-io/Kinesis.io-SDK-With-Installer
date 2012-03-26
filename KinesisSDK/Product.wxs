@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Product Id="*" Name="Kinesis.io SDK" Language="1033" Version="1.0.0.0" Manufacturer="Kinesis.io" UpgradeCode="a93964db-a0d9-4f4c-ad54-1e6e4312a94e">
+		<Package InstallerVersion="200" Compressed="yes" />
+
+		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="ProgramMenuFolder">
+          <Directory Id="MyShortcutsDir" Name="Kinesis.io SDK" />
+        </Directory>
+        <Directory Id="INSTALLLOCATION" Name="KinesisSDK">
+          <Directory Id="ExamplesDir" Name="Examples"></Directory>
+          <Directory Id="ToolsDir" Name="Tools">
+            <Component Guid="c46f28ff-e574-4792-a26a-61b27409f413" Id="CMP_Simulator">
+              <File Id="FILE_SIMULATOR" Name="Kinesis Simulator.exe" Source="KinesisSimulator.exe" KeyPath="yes">
+              </File>
+            </Component>
+          </Directory>
+          <Directory Id="ServiceDir" Name="Service">
+            <Component Id="CMP_Service">
+              <File Source="$(var.Kinesis.io_Service.TargetPath)" />
+              <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="Kinesis.io_Service" DisplayName="Kinesis.io Service" Description="Required to develop quick Kinect applications" Start="auto" Account="LocalSystem" ErrorControl="ignore" Interactive="no">
+              </ServiceInstall>
+              <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="Kinesis.io_Service" Wait="yes" />
+            </Component>
+          </Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+    
+    <DirectoryRef Id="MyShortcutsDir">
+      <Component Id="CMP_SimulatorShortcut" Guid="*">
+        <Shortcut Id="SimulatorStartMenuShortcut" Name="Kinesis.io Simulator" Description="Kinesis.io Simulator" Target="[ToolsDir]Kinesis Simulator.exe" />
+        <util:InternetShortcut Id="OnlineDocumentationShortcut" Name="Documentation" Target="http://docs.kinesis.io"/>
+        <Shortcut Id="UninstallShortcut" Name="Uninstall Kinesis.io SDK" Description="Uninstalls Kinesis.io SDK and all of its components" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
+        <RemoveFolder Id="RemoveMyShortcutsDir" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Kinesis.io\Kinesis.io SDK" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    
+		<Feature Id="ProductFeature" Title="KinesisSDK" Level="1">
+      <ComponentRef Id="CMP_Service" />
+      <ComponentRef Id="CMP_Simulator" />
+      <ComponentRef Id="CMP_SimulatorShortcut" />
+			<!-- Note: The following ComponentGroupRef is required to pull in generated authoring from project references. -->
+			<ComponentGroupRef Id="Product.Generated" />
+		</Feature>
+    
+    <UIRef Id="WixUI_Minimal" />
+	</Product>
+</Wix>
