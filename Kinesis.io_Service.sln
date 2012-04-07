@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinesis.io_Service", "Kinesis.io_Service\Kinesis.io_Service.csproj", "{88145711-ABD4-40E0-998F-C586605A6750}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "KinesisServiceSetup", "KinesisServiceSetup\KinesisServiceSetup.vdproj", "{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}"
-EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "KinesisSDK", "KinesisSDK\KinesisSDK.wixproj", "{841F3D7E-FDDC-4381-BC72-15A5F7C7C18C}"
 EndProject
 Global
@@ -26,14 +24,6 @@ Global
 		{88145711-ABD4-40E0-998F-C586605A6750}.Release|x86.Build.0 = Release|x86
 		{88145711-ABD4-40E0-998F-C586605A6750}.SingleImage|x86.ActiveCfg = Release|x86
 		{88145711-ABD4-40E0-998F-C586605A6750}.SingleImage|x86.Build.0 = Release|x86
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.CD_ROM|x86.ActiveCfg = Release
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.CD_ROM|x86.Build.0 = Release
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.Debug|x86.ActiveCfg = Debug
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.DVD-5|x86.ActiveCfg = Debug
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.DVD-5|x86.Build.0 = Debug
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.Release|x86.ActiveCfg = Release
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.SingleImage|x86.ActiveCfg = Release
-		{011FCDB4-2E32-4A1B-BA44-10F9A117FADA}.SingleImage|x86.Build.0 = Release
 		{841F3D7E-FDDC-4381-BC72-15A5F7C7C18C}.CD_ROM|x86.ActiveCfg = Release|x86
 		{841F3D7E-FDDC-4381-BC72-15A5F7C7C18C}.CD_ROM|x86.Build.0 = Release|x86
 		{841F3D7E-FDDC-4381-BC72-15A5F7C7C18C}.Debug|x86.ActiveCfg = Debug|x86
