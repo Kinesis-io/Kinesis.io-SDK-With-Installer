@@ -92,7 +92,9 @@ namespace Kinesis.io_Service
             if (server.m_Sessions.Count > 0 && skeletalTrackingRunning == false)
             {
                 server.SendToAll("{\"Kinect\":\"Connected\"}");
-                skeletonTracker = new SkeletonTracker();
+
+                if(skeletonTracker == null)
+                    skeletonTracker = new SkeletonTracker();
 
                 if (_sensor == null && KinectSensor.KinectSensors.Count > 0)
                     _sensor = KinectSensor.KinectSensors[0];

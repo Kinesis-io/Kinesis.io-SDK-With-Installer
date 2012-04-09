@@ -7,6 +7,7 @@ using Coding4Fun.Kinect.Wpf;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.IO;
+using System.Timers;
 
 namespace Kinesis.io_Service
 {
@@ -17,12 +18,27 @@ namespace Kinesis.io_Service
         Skeleton[] allSkeletons = new Skeleton[6];
         bool skeletonDetected = false;
 
+        bool trackingStopping = false;
+        bool trackingStopped = true;
+        Timer stopTimer;
+
         KinesisSwipeGestureRecognizer kSwipeGestureRecognizer;
 
         String depthImage;
 
         internal void Start()
         {
+
+            if (trackingStopping == true)
+            {
+                this.cancelStop();
+            }
+
+            if (trackingStopped == false)
+            {
+                return;
+            }
+
             if (sensor != null)
             {
                 TransformSmoothParameters parameters =
@@ -46,6 +62,8 @@ namespace Kinesis.io_Service
                 Console.WriteLine("Tracking...");
 
                 kSwipeGestureRecognizer = new KinesisSwipeGestureRecognizer();
+
+                trackingStopped = false;
             }
         }
 
@@ -199,11 +217,11 @@ namespace Kinesis.io_Service
                 Joint cursor = HandRight;
 
                 //No hand is up. Just return without sending any information
-                if (HandLeft.Position.Y < ElbowLeft.Position.Y && HandRight.Position.Y < ElbowRight.Position.Y)
-                    return;
+                //if (HandLeft.Position.Y < ElbowLeft.Position.Y && HandRight.Position.Y < ElbowRight.Position.Y)
+                //    return;
 
                 //Set cursor to left hand if right hand is down
-                if (HandLeft.Position.Y > ElbowLeft.Position.Y && HandRight.Position.Y < ElbowRight.Position.Y)
+                if (HandLeft.Position.Y > HandRight.Position.Y && HandRight.Position.Y < ElbowRight.Position.Y)
                     cursor = HandLeft;
 
 
@@ -244,8 +262,50 @@ namespace Kinesis.io_Service
             }
         }
 
+        private void cancelStop()
+        {
+            Console.WriteLine("Cancel stop");
+            trackingStopping = false;
+            trackingStopped = false;
+            stopTimer.Stop();
+        }
+
         internal void Stop()
         {
+
+            if (trackingStopping == true || trackingStopped == true)
+            {
+                Console.WriteLine("already stopping or stopped");
+                return;
+            }
+
+            if (trackingStopping == false)
+            {
+                Console.WriteLine("stopping in 4 seconds");
+                trackingStopping = true;
+                trackingStopped = false;
+
+                stopTimer = new Timer(4000);
+                stopTimer.Elapsed += new ElapsedEventHandler(stopTimer_Elapsed);
+                stopTimer.Start();
+            }
+        }
+
+        void stopTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            stopTimer.Stop();
+            stopTimer = null;
+
+            if (trackingStopping == false)
+            {
+                Console.WriteLine("Canceled stop");
+                return;
+            }
+
+            trackingStopping = false;
+
+            Console.WriteLine("stopping");
+
             if (sensor != null)
             {
                 sensor.SkeletonFrameReady -= sensor_SkeletonFrameReady;
@@ -253,6 +313,8 @@ namespace Kinesis.io_Service
                 Console.WriteLine("Stop Tracking...");
                 sensor.Stop();
             }
+            Console.WriteLine("Stopped");
+            trackingStopped = true;
         }
     }
 }
