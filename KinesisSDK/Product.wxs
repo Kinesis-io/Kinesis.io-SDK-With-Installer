@@ -22,6 +22,7 @@
             <Component Id="CMP_Service">
               <File Source="$(var.Kinesis.io_Service.TargetPath)" />
               <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="Kinesis.io_Service" DisplayName="Kinesis.io Service" Description="Required to develop quick Kinect applications" Start="auto" Account="LocalSystem" ErrorControl="ignore" Interactive="no">
+                <ServiceDependency Id="KinectManagement" />
               </ServiceInstall>
               <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="Kinesis.io_Service" Wait="yes" />
             </Component>
@@ -47,6 +48,16 @@
 			<!-- Note: The following ComponentGroupRef is required to pull in generated authoring from project references. -->
 			<ComponentGroupRef Id="Product.Generated" />
 		</Feature>
+
+    <CustomAction Id="LaunchBrowser"
+        ExeCommand="explorer.exe http://docs.kinesis.io/quickstart"
+        Directory="INSTALLLOCATION"
+        Return="asyncNoWait">
+    </CustomAction>
+
+    <InstallExecuteSequence>
+      <Custom Action="LaunchBrowser" After="InstallFinalize">NOT REMOVE</Custom>
+    </InstallExecuteSequence>
     
     <UIRef Id="WixUI_Minimal" />
 	</Product>
