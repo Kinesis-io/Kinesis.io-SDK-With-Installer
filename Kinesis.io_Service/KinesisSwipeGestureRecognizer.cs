@@ -6,6 +6,8 @@ using Kinect.Toolbox;
 using Microsoft.Kinect;
 using Coding4Fun.Kinect.Wpf;
 using System.Timers;
+using System.Collections;
+using Newtonsoft.Json;
 
 namespace Kinesis.io_Service
 {
@@ -71,7 +73,39 @@ namespace Kinesis.io_Service
             var scaledCursor = cursor.ScaleTo(100, 100, 0.3f, 0.3f);
             previousDirection = direction;
             previousJoint = joint;
-            Kinesis.gKinesis.server.SendToAll(String.Format("{{\"gestures\":[{{\"type\":0,\"direction\":{0},\"joints\":[{1}],\"origin\":{{\"x\":{2},\"y\":{3},\"z\":{4}}}}}],\"cursor\":{{\"x\":{5},\"y\":{6},\"z\":{7}}}}}", direction, joint, scaledOrigin.Position.X, scaledOrigin.Position.Y, scaledOrigin.Position.Z, scaledCursor.Position.X, scaledCursor.Position.Y, scaledCursor.Position.Z));
+
+
+            Hashtable gesture = new Hashtable();
+
+            Hashtable origin = new Hashtable();
+            origin.Add("x", scaledOrigin.Position.X);
+            origin.Add("y", scaledOrigin.Position.Y);
+            origin.Add("z", scaledOrigin.Position.Z);
+            gesture.Add("origin", origin);
+
+            Hashtable cursorHash = new Hashtable();
+            cursorHash.Add("x", scaledCursor.Position.X);
+            cursorHash.Add("y", scaledCursor.Position.Y);
+            cursorHash.Add("z", scaledCursor.Position.Z);
+            gesture.Add("cursor", cursorHash);
+
+            ArrayList joints = new ArrayList();
+            joints.Add(joint);
+            gesture.Add("joints", joints);
+
+            gesture.Add("direction", direction);
+
+            gesture.Add("type", 0);
+
+
+            Hashtable message = new Hashtable();
+
+            ArrayList gestures = new ArrayList();
+            gestures.Add(gesture);
+
+            message.Add("gestures", gestures);
+
+            Kinesis.gKinesis.server.SendToAll(JsonConvert.SerializeObject(message));
         }
 
         void _timer_Elapsed(object sender, ElapsedEventArgs e)

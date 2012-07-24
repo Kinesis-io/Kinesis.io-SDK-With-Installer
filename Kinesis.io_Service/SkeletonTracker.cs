@@ -8,6 +8,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.IO;
 using System.Timers;
+using System.Collections;
+using Newtonsoft.Json;
 
 namespace Kinesis.io_Service
 {
@@ -69,24 +71,25 @@ namespace Kinesis.io_Service
 
         void sensor_DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
-            using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
-            {
-                if (depthFrame == null)
-                {
-                    return;
-                }
+            return;
+            //using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
+            //{
+            //    if (depthFrame == null)
+            //    {
+            //        return;
+            //    }
 
-                //generateDataForWeb(depthFrame);
-                byte[] pixels = GenerateColoredBytes(depthFrame);
+            //    //generateDataForWeb(depthFrame);
+            //    byte[] pixels = GenerateColoredBytes(depthFrame);
 
-                //number of bytes per row width * 4 (B,G,R,Empty)
-                int stride = depthFrame.Width * 4;
+            //    //number of bytes per row width * 4 (B,G,R,Empty)
+            //    int stride = depthFrame.Width * 4;
 
-                //create image
-                BitmapSource src = BitmapSource.Create(depthFrame.Width, depthFrame.Height,
-                    96, 96, PixelFormats.Bgr32, null, pixels, stride);
-                depthImage = BitmapSourceToBase64(src);
-            }
+            //    //create image
+            //    BitmapSource src = BitmapSource.Create(depthFrame.Width, depthFrame.Height,
+            //        96, 96, PixelFormats.Bgr32, null, pixels, stride);
+            //    depthImage = BitmapSourceToBase64(src);
+            //}
         }
 
         public String BitmapSourceToBase64(BitmapSource bitmap)
@@ -190,14 +193,12 @@ namespace Kinesis.io_Service
             {
                 skeletonDetected = true;
                 Kinesis.gKinesis.server.SendToAll("{\"message\":\"User Found\"}");
-                Console.WriteLine("User");
             }
 
             if (skeleton == null && skeletonDetected)
             {
                 skeletonDetected = false;
                 Kinesis.gKinesis.server.SendToAll("{\"message\":\"User Lost\"}");
-                Console.WriteLine("No User");
             }
 
             if (skeleton != null)
@@ -235,7 +236,15 @@ namespace Kinesis.io_Service
                     elbow = ElbowLeft;
                 }
 
-                Kinesis.gKinesis.server.SendToAll(String.Format("{{\"depthImage\":\"{0}\",\"cursor\":{{\"x\":{1},\"y\":{2},\"z\":{3}}}}}", depthImage, scaledCursor.Position.X, scaledCursor.Position.Y, cursor.Position.Z - Spine.Position.Z));
+                Hashtable position = new Hashtable();
+                position.Add("x", scaledCursor.Position.X);
+                position.Add("y", scaledCursor.Position.Y);
+                position.Add("z", cursor.Position.Z - Spine.Position.Z);
+
+                Hashtable message = new Hashtable();
+                message.Add("cursor", position);
+
+                Kinesis.gKinesis.server.SendToAll(JsonConvert.SerializeObject(message));
 
                 kSwipeGestureRecognizer.cursor = cursor;
 

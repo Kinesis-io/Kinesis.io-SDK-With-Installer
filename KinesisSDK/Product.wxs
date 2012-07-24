@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-	<Product Id="*" Name="Kinesis.io SDK" Language="1033" Version="1.0.0.0" Manufacturer="Kinesis.io" UpgradeCode="a93964db-a0d9-4f4c-ad54-1e6e4312a94e">
+	<Product Id="*" Name="Kinesis.io SDK" Language="1033" Version="1.1.0.0" Manufacturer="Kinesis.io" UpgradeCode="a93964db-a0d9-4f4c-ad54-1e6e4312a94e">
 		<Package InstallerVersion="200" Compressed="yes" />
 
 		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
